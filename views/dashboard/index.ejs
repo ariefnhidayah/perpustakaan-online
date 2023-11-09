@@ -1,0 +1,88 @@
+<div class="container-fluid">
+  <% if(user.role=='admin' ) { %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title fw-semibold mb-4">Laporan Peminjaman</h5>
+        <div class="table-responsive">
+          <table class="table text-nowrap mb-0 align-middle" id="dataTable">
+            <thead class="text-dark fs-4">
+              <tr>
+                <th class="border-bottom-0">Tanggal Peminjaman</th>
+                <th class="border-bottom-0">Batas Waktu Pengembalian</th>
+                <th class="border-bottom-0">Buku</th>
+                <th class="border-bottom-0">Peminjam</th>
+                <th class="border-bottom-0">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i = 0; i < reports.length; i++) { %>
+                <tr>
+                  <td><%= reports[i].loan_date %></td>
+                  <td><%= reports[i].due_date %></td>
+                  <td><%= reports[i].book.title %></td>
+                  <td><%= reports[i].user.fullname %></td>
+                  <td>
+                    <% if (reports[i].status == 'loaned') { %>
+                      <% if (current_date > reports[i].due_date) { %>
+                        <span class="badge bg-danger">Melewati Batas Pengembalian <%= difference_day(reports[i].due_date, current_date) %> hari</span>
+                      <% } else { %>
+                        <span class="badge bg-warning">Masih Dipinjam</span>
+                      <% } %>
+                    <% } else { %>
+                      <span class="badge bg-success">Sudah Dikembalikan</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title fw-semibold mb-4">Riwayat Peminjaman</h5>
+        <div class="table-responsive">
+          <table class="table text-nowrap mb-0 align-middle" id="dataTable">
+            <thead class="text-dark fs-4">
+              <tr>
+                <th class="border-bottom-0">#</th>
+                <th class="border-bottom-0">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i = 0; i < reports.length; i++) { %>
+                <tr>
+                  <td>
+                    <div class="row">
+                      <div class="col-sm-2">
+                        <a href="/<%= reports[i].book.image %>" target="_blank"><img src="/<%= reports[i].book.image %>" class="img-thumbnail"/></a>
+                      </div>
+                      <div class="col-sm-10">
+                        <span class="text-muted"><%= reports[i].loan_date %></span>
+                        <h5 class="fw-semibold"><%= reports[i].book.title %></h5>
+                        <div class="text-muted">Author: <%= reports[i].book.author %></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <% if (reports[i].status == 'loaned') { %>
+                      <% if (current_date > reports[i].due_date) { %>
+                        <span class="badge bg-danger">Melewati Batas Pengembalian <%= difference_day(reports[i].due_date, current_date) %> hari</span>
+                      <% } else { %>
+                        <span class="badge bg-warning">Masih Dipinjam</span>
+                      <% } %>
+                    <% } else { %>
+                      <span class="badge bg-success">Sudah Dikembalikan</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>

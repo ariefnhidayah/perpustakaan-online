@@ -1,0 +1,67 @@
+<div class="container-fluid">
+  <% if (alert) { %>
+    <% if (alert.message != '') { %>
+      <div class="alert alert-<%= alert.status %> alert-dismissible fade show" role="alert">
+        <%- alert.message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+  <% } %>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title mb-4">
+        <div class="row">
+          <div class="col-md-6 fw-semibold">Cari</div>
+        </div>
+      </h5>
+      <form action="" method="get">
+        <div class="row">
+          <div class="col-sm-6">
+            <input type="text" name="search" id="search" class="form-control" placeholder="Masukkan nama buku / nama peminjam" value="<%= search %>" required />
+          </div>
+          <div class="col-sm-6"><button type="submit" class="btn btn-primary">Cari</button></div>
+        </div>
+      </form>
+      <% if (search) { %>
+        <div class="table-responsive mt-3">
+          <table class="table text-nowrap mb-0 align-middle" id="dataTable">
+            <thead class="text-dark fs-4">
+              <tr>
+                <th class="border-bottom-0">Tanggal Peminjaman</th>
+                <th class="border-bottom-0">Batas Waktu Pengembalian</th>
+                <th class="border-bottom-0">Buku</th>
+                <th class="border-bottom-0">Peminjam</th>
+                <th class="border-bottom-0">Status</th>
+                <th class="border-bottom-0">Opsi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i = 0; i < loan.length; i++) { %>
+                <tr>
+                  <td><%= loan[i].loan_date %></td>
+                  <td><%= loan[i].due_date %></td>
+                  <td><%= loan[i].book.title %></td>
+                  <td><%= loan[i].user.fullname %></td>
+                  <td>
+                    <% if (loan[i].status == 'loaned') { %>
+                      <% if (current_date > loan[i].due_date) { %>
+                        <span class="badge bg-danger">Melewati Batas Pengembalian <%= difference_day(loan[i].due_date, current_date) %> hari</span>
+                      <% } else { %>
+                        <span class="badge bg-warning">Masih Dipinjam</span>
+                      <% } %>
+                    <% } else { %>
+                      <span class="badge bg-success">Sudah Dikembalikan</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <a href="/return-book/<%= loan[i].id %>" class="btn btn-primary btn-sm" onclick="return confirm('Yakin buku sudah dikembalikan?')">Kembalikan Buku</a>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
